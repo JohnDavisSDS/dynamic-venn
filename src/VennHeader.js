@@ -28,7 +28,7 @@ class VennHeader extends Component {
                          direction='row'
                          responsive={false}>
                         <Box colorIndex="light-2">
-                            <Select options={['2 Sets', '3 Sets', '4 Sets']}
+                            <Select options={['2 Sets', '3 Sets']}
                                     value={selectedValue}
                                     onChange={this.handleChange}/>
                         </Box>

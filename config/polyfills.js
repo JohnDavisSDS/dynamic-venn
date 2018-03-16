@@ -20,3 +20,55 @@ Object.assign = require('object-assign');
 if (process.env.NODE_ENV === 'test') {
   require('raf').polyfill(global);
 }
+
+// Additional Set functions
+if (!Set.prototype.isSuperset) {
+    Object.defineProperty(Set.prototype, 'isSuperset', {
+        value: function(subset) {
+            for (var elem of subset) {
+                if (!this.has(elem)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    });
+}
+
+if (!Set.prototype.union) {
+    Object.defineProperty(Set.prototype, 'union', {
+        value: function(setB) {
+            var union = new Set(this);
+            for (var elem of setB) {
+                union.add(elem);
+            }
+            return union;
+        }
+    });
+}
+
+if (!Set.prototype.intersection) {
+    Object.defineProperty(Set.prototype, 'intersection', {
+        value: function(setB) {
+            var intersection = new Set();
+            for (var elem of setB) {
+                if (this.has(elem)) {
+                    intersection.add(elem);
+                }
+            }
+            return intersection;
+        }
+    });
+}
+
+if (!Set.prototype.difference) {
+    Object.defineProperty(Set.prototype, 'difference', {
+        value: function(setB) {
+            var difference = new Set(this);
+            for (var elem of setB) {
+                difference.delete(elem);
+            }
+            return difference;
+        }
+    });
+}

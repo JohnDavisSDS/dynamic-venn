@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import VennContent from "./VennContent";
 import VennHeader from "./VennHeader";
 
 class DynamicVenn extends Component {
@@ -17,7 +18,7 @@ class DynamicVenn extends Component {
         return (
             <div>
                 <VennHeader setCount={setCount} onChange={this.handleSetCountChange}/>
-                {"Placeholder: " + setCount}
+                <VennContent setCount={setCount}/>
             </div>
         );
     }
