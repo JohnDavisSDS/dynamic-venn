@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 import Box from 'grommet/components/Box';
-import VennDiagram from "./VennDiagram";
-import VennInterface from "./VennInterface";
+import VennFormula from "./VennFormula";
+import VennButtons from "./VennButtons";
 
-class VennContent extends Component {
+class VennInterface extends Component {
     constructor(props) {
         super(props);
         this.handleTextChange = this.handleTextChange.bind(this);
@@ -37,4 +37,4 @@ class VennContent extends Component {
     }
 }
 
-export default VennContent;
+export default VennInterface;

@@ -6,7 +6,13 @@ const SET_B_INDEX = 1;
 const SET_C_INDEX = 2;
 
 const VENN_SECTIONS_TWO_SETS = {
-    "SDiffAB": new VennSection(),
+    "SDiffAB": new VennSection(
+        [],
+        [
+            new VennArc(30 * Math.PI / 24, 18 * Math.PI / 24, false, SET_A_INDEX),
+            new VennArc(30 * Math.PI / 24, 18 * Math.PI / 24, false, SET_B_INDEX)
+        ]
+    ),
     "ADiffB": new VennSection(
         [SET_A_INDEX],
         [
@@ -36,7 +42,14 @@ const VENN_SECTION_NAMES_TWO_SETS = new Set([
     "AIntersectB"
 ]);
 const VENN_SECTIONS_THREE_SETS = {
-    "SDiffABC": new VennSection(),
+    "SDiffABC": new VennSection(
+        [],
+        [
+            new VennArc(35 * Math.PI / 24, 13 * Math.PI / 24, false, SET_A_INDEX),
+            new VennArc(35 * Math.PI / 24, 13 * Math.PI / 24, false, SET_B_INDEX),
+            new VennArc(35 * Math.PI / 24, 13 * Math.PI / 24, false, SET_C_INDEX)
+        ]
+    ),
     "ADiffBC": new VennSection(
         [SET_A_INDEX],
         [
@@ -124,8 +137,9 @@ class VennHelper {
                 return VENN_SECTION_NAMES_TWO_SETS;
             case 3:
                 return VENN_SECTION_NAMES_THREE_SETS;
+            default:
+                throw new Error("Invalid Argument");
         }
-        throw "Invalid Argument";
     }
 
     static getVennSection(setCount, sectionName) {
@@ -134,8 +148,9 @@ class VennHelper {
                 return VENN_SECTIONS_TWO_SETS[sectionName];
             case 3:
                 return VENN_SECTIONS_THREE_SETS[sectionName];
+            default:
+                throw new Error("Invalid Argument");
         }
-        throw "Invalid Argument";
     }
 
     static getSetCharFromIndex(setIndex) {
