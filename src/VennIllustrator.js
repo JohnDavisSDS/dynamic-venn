@@ -90,6 +90,9 @@ class VennIllustrator {
         this.canvasContext.fillStyle = SECTION_FILL_COLOR;
 
         this.vennIllustrationData.vennSections.forEach(function(vennSection) {
+            if (vennSection.isOuterSection())
+                return;
+
             this.canvasContext.beginPath();
             this._drawArcs(vennSection.arcs);
             this.canvasContext.fill();
