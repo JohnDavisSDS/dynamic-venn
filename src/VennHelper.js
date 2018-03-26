@@ -5,6 +5,13 @@ const SET_A_INDEX = 0;
 const SET_B_INDEX = 1;
 const SET_C_INDEX = 2;
 
+const COMPLEMENT_CHAR = String.fromCharCode(8242);
+const INTERSECTION_CHAR = String.fromCharCode(8898);
+const UNION_CHAR = String.fromCharCode(8899);
+
+const MIN_WIDTH = 200;
+const MAX_WIDTH = 600;
+
 const VENN_SECTIONS_TWO_SETS = {
     "SDiffAB": new VennSection(
         [],
@@ -131,6 +138,32 @@ class VennHelper {
         return SET_C_INDEX;
     }
 
+    static get COMPLEMENT_CHAR() {
+        return COMPLEMENT_CHAR;
+    }
+
+    static get INTERSECTION_CHAR() {
+        return INTERSECTION_CHAR;
+    }
+
+    static get UNION_CHAR() {
+        return UNION_CHAR;
+    }
+
+    static get MIN_WIDTH() {
+        return MIN_WIDTH;
+    }
+
+    static expectedWidth(windowWidth) {
+        let width = Math.floor(windowWidth);
+        if (width < MIN_WIDTH)
+            return MIN_WIDTH;
+        else if (width > MAX_WIDTH)
+            return MAX_WIDTH;
+        else
+            return width;
+    }
+
     static getAllVennSectionNames(setCount) {
         switch(setCount) {
             case 2:
@@ -159,6 +192,10 @@ class VennHelper {
 
     static getSetIndexFromChar(setChar) {
         return setChar.charCodeAt(0) - 65;
+    }
+
+    static getSetsFromFormula(setFormula) {
+        return [];
     }
 }
 

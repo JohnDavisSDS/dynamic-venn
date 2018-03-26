@@ -1,12 +1,26 @@
 import React, {Component} from 'react';
 import Box from 'grommet/components/Box';
 import VennHelper from "./VennHelper";
-import VennIllustrationData from "./VennIllustrationData";
 import VennIllustrator from "./VennIllustrator";
 
 class VennDiagram extends Component {
+    render() {
+        const vennIllustrationData = this.props.vennIllustrationData;
+        const width = vennIllustrationData.width;
+
+        return (
+            <Box pad="small" colorIndex="light-1" align="center" alignContent="center" justify="center">
+                <canvas id="vennDiagramCanvas" width={width} height={width}>
+                    Your browser does not support the HTML5 canvas tag.
+                </canvas>
+            </Box>
+        );
+    }
+
     componentDidMount() {
-        const setCount = 3;
+        const vennIllustrationData = this.props.vennIllustrationData;
+        const setCount = vennIllustrationData.setCount;
+
         let universalSet = VennHelper.getAllVennSectionNames(setCount);
         let sets = [
             new Set(),
@@ -29,7 +43,7 @@ class VennDiagram extends Component {
             testSets.push(VennHelper.getVennSection(setCount, setName));
         });
 
-        const vennIllustrationData = new VennIllustrationData(setCount, 600, testSets);
+        //const vennIllustrationData = new VennIllustrationData(setCount, 600, testSets);
 
 
         const canvas = document.getElementById("vennDiagramCanvas");
@@ -38,15 +52,16 @@ class VennDiagram extends Component {
         vennIllustrator.draw();
     }
 
-    render() {
-        return (
-            <Box pad="small" colorIndex="light-1" align="center" alignContent="center" justify="center">
-                <canvas id="vennDiagramCanvas" width="600" height="600">
-                    Your browser does not support the HTML5 canvas tag.
-                </canvas>
-            </Box>
-        );
+    componentDidUpdate() {
+        const vennIllustrationData = this.props.vennIllustrationData;
+
+
+        const canvas = document.getElementById("vennDiagramCanvas");
+        const canvasContext = canvas.getContext("2d");
+        const vennIllustrator = new VennIllustrator(canvasContext, vennIllustrationData);
+        vennIllustrator.draw();
     }
+
 }
 
 export default VennDiagram;

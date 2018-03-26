@@ -11,6 +11,7 @@ class VennIllustrator {
     }
 
     draw() {
+        this._clearCanvas();
         this._drawOuterSection();
         this._drawBox();
         this._drawLabels();
@@ -18,19 +19,25 @@ class VennIllustrator {
         this._drawCircles();
     }
 
+    _clearCanvas() {
+        const width = this.vennIllustrationData.width;
+        this._resetTransform();
+
+        this.canvasContext.fillStyle = EMPTY_FILL_COLOR;
+        this.canvasContext.fillRect(0, 0, width, width);
+    }
+
     _drawOuterSection() {
-        let outerSection = this.vennIllustrationData.vennSections.find(function(vennElement) {
+        const outerSection = this.vennIllustrationData.vennSections.find(function(vennElement) {
             return vennElement.isOuterSection();
         });
         if (typeof(outerSection) === "object") {
-            let width = this.vennIllustrationData.width;
+            const width = this.vennIllustrationData.width;
             this._resetTransform();
 
             // Fill entire area
             this.canvasContext.fillStyle = SECTION_FILL_COLOR;
-            this.canvasContext.beginPath();
-            this.canvasContext.rect(0, 0, width, width);
-            this.canvasContext.fill();
+            this.canvasContext.fillRect(0, 0, width, width);
 
             // Clear circles
             this.canvasContext.fillStyle = EMPTY_FILL_COLOR;
@@ -41,7 +48,7 @@ class VennIllustrator {
     }
 
     _drawBox() {
-        let width = this.vennIllustrationData.width;
+        const width = this.vennIllustrationData.width;
         this._resetTransform();
 
         this.canvasContext.beginPath();
@@ -50,11 +57,11 @@ class VennIllustrator {
     }
 
     _drawCircles() {
-        let circleOffset = this.vennIllustrationData.circleOffset();
-        let radius = this.vennIllustrationData.radius();
+        const circleOffset = this.vennIllustrationData.circleOffset();
+        const radius = this.vennIllustrationData.radius();
 
         for (let setIndex = 0; setIndex < this.vennIllustrationData.setCount; setIndex++) {
-            let rotationAngle = this.vennIllustrationData.circleRotationAngle(setIndex);
+            const rotationAngle = this.vennIllustrationData.circleRotationAngle(setIndex);
 
             this._centerTransform();
             this.canvasContext.rotate(rotationAngle);
@@ -68,14 +75,14 @@ class VennIllustrator {
         let fontOffset = 2 * this.vennIllustrationData.centerOffset() / 3;
         this._centerTransform();
 
-        let fontPixels = this._setFont();
-        let charOffset = Math.trunc(-fontPixels / 2);
+        const fontPixels = this._setFont();
+        const charOffset = Math.trunc(-fontPixels / 2);
         this.canvasContext.fillStyle = TEXT_FILL_COLOR;
         this.canvasContext.fillText(VennHelper.getSetCharFromIndex(0), -fontOffset + charOffset, -fontOffset);
         this.canvasContext.fillText(VennHelper.getSetCharFromIndex(1), fontOffset, -fontOffset);
         if (this.vennIllustrationData.setCount === 3) {
             fontOffset = 15 * this.vennIllustrationData.centerOffset() / 16;
-            this.canvasContext.fillText(VennHelper.getSetCharFromIndex(1), charOffset, fontOffset);
+            this.canvasContext.fillText(VennHelper.getSetCharFromIndex(2), charOffset, fontOffset);
         }
     }
 
@@ -90,7 +97,7 @@ class VennIllustrator {
     }
 
     _setFont() {
-        let fontPixels = Math.trunc(this.vennIllustrationData.radius() / 6);
+        const fontPixels = Math.trunc(this.vennIllustrationData.radius() / 6);
 
         this.canvasContext.font = fontPixels + "px Arial";
         return fontPixels;
@@ -98,9 +105,9 @@ class VennIllustrator {
 
     _drawArcs(arcs) {
         arcs.forEach(function(arc) {
-            let rotationAngle = this.vennIllustrationData.circleRotationAngle(arc.setIndex);
-            let circleOffset = this.vennIllustrationData.circleOffset();
-            let radius = this.vennIllustrationData.radius();
+            const rotationAngle = this.vennIllustrationData.circleRotationAngle(arc.setIndex);
+            const circleOffset = this.vennIllustrationData.circleOffset();
+            const radius = this.vennIllustrationData.radius();
 
             this._centerTransform();
             this.canvasContext.rotate(rotationAngle);
@@ -109,7 +116,7 @@ class VennIllustrator {
     }
 
     _centerTransform() {
-        let offsetTranslation = this.vennIllustrationData.centerOffset();
+        const offsetTranslation = this.vennIllustrationData.centerOffset();
         this.canvasContext.setTransform(1, 0, 0, 1, offsetTranslation, offsetTranslation);
     }
 

@@ -1,15 +1,17 @@
 import React, {Component} from 'react';
 import Box from 'grommet/components/Box';
-import VennFormula from "./VennFormula";
 import VennButtons from "./VennButtons";
+import VennFormula from "./VennFormula";
+import VennHelper from "./VennHelper";
+import VennIllustrationData from "./VennIllustrationData";
 
 class VennInterface extends Component {
     constructor(props) {
         super(props);
         this.handleTextChange = this.handleTextChange.bind(this);
         this.handleButtonChange = this.handleButtonChange.bind(this);
-        this.handleFormulaChange = this.handleFormulaChange.bind(this);
-        this.state = {selectionStart: 0, selectionEnd: 0, setFormulaText: props.setFormula};
+        this.handleDiagramRender = this.handleDiagramRender.bind(this);
+        this.state = {selectionStart: 0, selectionEnd: 0, setFormulaText: ""};
     }
 
     handleTextChange(selectionStart, selectionEnd, value) {
@@ -17,21 +19,34 @@ class VennInterface extends Component {
     }
 
     handleButtonChange(char) {
-        let setFormulaText = this.props.setFormula.slice(0, this.state.selectionStart) +
+        const selectionStart = this.state.selectionStart;
+        const selectionEnd = this.state.selectionEnd;
+        const currentFormula = this.state.setFormulaText;
+
+        const newFormula = currentFormula.slice(0, selectionStart) +
             char +
-            this.props.setFormula.slice(this.state.selectionEnd);
-        this.setState({setFormulaText});
+            currentFormula.slice(selectionEnd);
+        this.setState({newFormula});
     }
 
-    handleFormulaChange() {
-        this.props.onChange(this.state.setFormulaText);
+    handleDiagramRender() {
+        const currentVenn = this.props.vennIllustrationData;
+        const setFormula = this.state.setFormulaText;
+
+        const newVennSets = VennHelper.getSetsFromFormula(setFormula);
+        const newVenn = new VennIllustrationData(currentVenn.setCount, currentVenn.width, newVennSets);
+
+        this.props.onDiagramRender(newVenn);
     }
 
     render() {
+        const setFormulaText = this.state.setFormulaText;
+        const setCount = this.props.vennIllustrationData.setCount;
+
         return (
             <Box pad="small" colorIndex="light-1">
-                <VennFormula setFormula={this.props.setFormula} onChange={this.handleFormulaChange}/>
-                <VennButtons setCount={this.props.setCount} onChange={this.handleButtonChange}/>
+                <VennFormula setFormulaText={setFormulaText} onChange={this.handleTextChange} onDiagramRender={this.handleDiagramRender}/>
+                <VennButtons setCount={setCount} onChange={this.handleButtonChange}/>
             </Box>
         );
     }
