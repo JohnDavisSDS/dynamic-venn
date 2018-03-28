@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ReactResizeDetector from 'react-resize-detector';
 import VennContent from "./VennContent";
+import VennFooter from "./VennFooter";
 import VennHeader from "./VennHeader";
 import VennHelper from "./VennHelper";
 import App from 'grommet/components/App';
@@ -62,6 +63,7 @@ class DynamicVenn extends Component {
                 <ReactResizeDetector handleWidth={true} onResize={this.handleResize}/>
                 <VennHeader setCount={setCount} onChange={this.handleSetCountChange}/>
                 <VennContent setCount={setCount} width={width}/>
+                <VennFooter/>
             </App>
         );
     }
