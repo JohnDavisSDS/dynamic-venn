@@ -9,6 +9,7 @@ const SET_C_INDEX = 2;
 const COMPLEMENT_CHAR = String.fromCharCode(8242);
 const INTERSECTION_CHAR = String.fromCharCode(8898);
 const UNION_CHAR = String.fromCharCode(8899);
+const UNDER_BRACKET = String.fromCharCode(9141);
 
 const MIN_WIDTH = 200;
 const MAX_WIDTH = 600;
@@ -151,6 +152,10 @@ class VennHelper {
         return UNION_CHAR;
     }
 
+    static get UNDER_BRACKET() {
+        return UNDER_BRACKET;
+    }
+
     static get MIN_WIDTH() {
         return MIN_WIDTH;
     }
@@ -203,7 +208,7 @@ class VennHelper {
             subSets.push(new Set());
         }
 
-        universalSet.forEach(function(setName) {
+        universalSet.forEach((setName) => {
             const vennSection = VennHelper.getVennSection(setCount, setName);
             vennSection.supersetIndexes.forEach(function(setIndex) {
                 subSets[setIndex].add(setName);
@@ -216,7 +221,7 @@ class VennHelper {
         formulaStack.push(VennHelper.newFormulaObject());
 
         const formulaArray = setFormula.split("");
-        formulaArray.forEach(function(char, stringIndex) {
+        formulaArray.forEach((char, stringIndex) => {
             let formulaObject = formulaStack[stackIndex];
             let nextFormulaObject;
             processedText += char;
@@ -327,7 +332,7 @@ class VennHelper {
         }
 
         let arcSets = [];
-        formulaObject.leftSets.forEach(function(setName) {
+        formulaObject.leftSets.forEach((setName) => {
             arcSets.push(VennHelper.getVennSection(setCount, setName));
         });
 

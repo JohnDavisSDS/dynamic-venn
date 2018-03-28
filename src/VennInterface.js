@@ -7,28 +7,127 @@ import VennHelper from "./VennHelper";
 import VennIllustrationData from "./VennIllustrationData";
 import VennParseError from "./VennParseError";
 
+const defaultCharMap = {
+    "u": VennHelper.UNION_CHAR,
+    "U": VennHelper.UNION_CHAR,
+    "i": VennHelper.INTERSECTION_CHAR,
+    "I": VennHelper.INTERSECTION_CHAR,
+    "'": VennHelper.COMPLEMENT_CHAR,
+    "-": "-",
+    "(": "(",
+    ")": ")",
+    " ": " ",
+    "s": "S",
+    "S": "S"
+};
+
 class VennInterface extends Component {
     constructor(props) {
         super(props);
+        this.handleSelectionChange = this.handleSelectionChange.bind(this);
         this.handleTextChange = this.handleTextChange.bind(this);
+        this.handleTextPaste = this.handleTextPaste.bind(this);
         this.handleButtonChange = this.handleButtonChange.bind(this);
         this.handleDiagramRender = this.handleDiagramRender.bind(this);
-        this.state = {selectionStart: 0, selectionEnd: 0, setFormulaText: "", errorIndex: 0, errorMessage: ""};
+        this.charMap = {};
+        this.state = {
+            setFormulaText: "",
+            errorIndex: 0,
+            errorMessage: "",
+            selectionStart: 0,
+            selectionEnd: 0,
+            paste: false
+        };
     }
 
-    handleTextChange(selectionStart, selectionEnd, value) {
-        this.setState({selectionStart, selectionEnd, setFormulaText: value});
+    handleSelectionChange(e) {
+        this.setState({
+            selectionStart: e.target.selectionStart,
+            selectionEnd: e.target.selectionEnd
+        });
+    }
+
+    handleTextChange(e) {
+        if (this.state.paste) {
+            this.setState({paste: false});
+            return;
+        }
+
+        let selectionStart = e.target.selectionStart;
+        let setFormulaText = e.target.value;
+        if (setFormulaText.length > 0) {
+            const newChar = setFormulaText.substr(selectionStart - 1, 1);
+            let replacementChar = "";
+            if (this.charMap.hasOwnProperty(newChar)) {
+                replacementChar = this.charMap[newChar];
+            }
+
+            setFormulaText = setFormulaText.slice(0, selectionStart - 1) +
+                replacementChar +
+                setFormulaText.slice(selectionStart);
+
+            if (replacementChar === "")
+                selectionStart -= 1;
+        }
+
+        this.setState({setFormulaText, selectionStart, selectionEnd: selectionStart});
+    }
+
+    handleTextPaste(e) {
+        let setFormulaText = e.target.value;
+        const clipboardText = e.clipboardData.getData("text");
+        const selectionStart = e.target.selectionStart;
+        const selectionEnd = e.target.selectionEnd;
+
+        const clipboardArray = clipboardText.split("");
+        let pasteText = "";
+        clipboardArray.forEach((char) => {
+            if (this.charMap.hasOwnProperty(char)) {
+                pasteText += this.charMap[char];
+            }
+        });
+
+        setFormulaText = setFormulaText.slice(0, selectionStart) +
+            pasteText +
+            setFormulaText.slice(selectionEnd);
+
+        const newSelectionIndex = selectionStart + pasteText.length;
+        this.setState({
+            setFormulaText,
+            selectionStart: newSelectionIndex,
+            selectionEnd: newSelectionIndex,
+            paste: true
+        });
     }
 
     handleButtonChange(char) {
+        const setFormulaElement = document.getElementById("setFormulaTextInput");
         const selectionStart = this.state.selectionStart;
         const selectionEnd = this.state.selectionEnd;
         const currentFormula = this.state.setFormulaText;
 
-        const newFormula = currentFormula.slice(0, selectionStart) +
-            char +
-            currentFormula.slice(selectionEnd);
-        this.setState({newFormula});
+        let newFormula = "";
+        let newSelectionIndex = 0;
+        if (char === "BS") {
+            if (selectionStart !== selectionEnd) {
+                newFormula = currentFormula.slice(0, selectionStart) +
+                    currentFormula.slice(selectionEnd);
+                newSelectionIndex = selectionStart;
+            } else if (selectionStart !== 0) {
+                newFormula = currentFormula.slice(0, selectionStart - 1) +
+                    currentFormula.slice(selectionEnd);
+                newSelectionIndex = selectionStart - 1;
+            } else {
+                return;
+            }
+        } else {
+            newFormula = currentFormula.slice(0, selectionStart) +
+                char +
+                currentFormula.slice(selectionEnd);
+            newSelectionIndex = selectionStart + 1;
+        }
+        setFormulaElement.setSelectionRange(newSelectionIndex, newSelectionIndex);
+        this.setState({setFormulaText: newFormula, selectionStart: newSelectionIndex, selectionEnd: newSelectionIndex});
     }
 
     handleDiagramRender() {
@@ -59,6 +158,7 @@ class VennInterface extends Component {
         const newSetCount = nextProps.vennIllustrationData.setCount;
 
         if (oldSetCount !== newSetCount) {
+                this.updateCharMap();
             this.setState({selectionStart: 0, selectionEnd: 0, setFormulaText: ""});
         }
     }
@@ -73,8 +173,14 @@ class VennInterface extends Component {
 
         return (
             <Box pad="small" colorIndex="light-1">
-                <VennFormula vennIllustrationData={vennIllustrationData} setFormulaText={setFormulaText}
-                             onChange={this.handleTextChange} onDiagramRender={this.handleDiagramRender}/>
+                <VennFormula
+                    vennIllustrationData={vennIllustrationData}
+                    setFormulaText={setFormulaText}
+                    onChange={this.handleTextChange}
+                    onPaste={this.handleTextPaste}
+                    onDiagramRender={this.handleDiagramRender}
+                    onSelectionChange={this.handleSelectionChange}
+                />
                 {errorMessage !== "" && errorIndex !== 0 &&
                 <Notification status='critical' message={errorMessage} state={errorState}/>
                 }
@@ -84,6 +190,21 @@ class VennInterface extends Component {
                 <VennButtons vennIllustrationData={vennIllustrationData} onChange={this.handleButtonChange}/>
             </Box>
         );
+    }
+
+    componentWillMount() {
+        this.updateCharMap();
+    }
+
+    updateCharMap() {
+        this.charMap = Object.assign({}, defaultCharMap);
+        const vennIllustrationData = this.props.vennIllustrationData;
+
+        for (let i = 0; i < vennIllustrationData.setCount; i++) {
+            const setChar = VennHelper.getSetCharFromIndex(i);
+            this.charMap[setChar] = setChar;
+            this.charMap[setChar.toLowerCase()] = setChar;
+        }
     }
 }
 

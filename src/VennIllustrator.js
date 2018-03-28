@@ -89,14 +89,14 @@ class VennIllustrator {
     _drawInnerSections() {
         this.canvasContext.fillStyle = SECTION_FILL_COLOR;
 
-        this.vennIllustrationData.vennSections.forEach(function(vennSection) {
+        this.vennIllustrationData.vennSections.forEach((vennSection) => {
             if (vennSection.isOuterSection())
                 return;
 
             this.canvasContext.beginPath();
             this._drawArcs(vennSection.arcs);
             this.canvasContext.fill();
-        }, this);
+        });
     }
 
     _setFont() {
@@ -107,7 +107,7 @@ class VennIllustrator {
     }
 
     _drawArcs(arcs) {
-        arcs.forEach(function(arc) {
+        arcs.forEach((arc) => {
             const rotationAngle = this.vennIllustrationData.circleRotationAngle(arc.setIndex);
             const circleOffset = this.vennIllustrationData.circleOffset();
             const radius = this.vennIllustrationData.radius();
@@ -115,7 +115,7 @@ class VennIllustrator {
             this._centerTransform();
             this.canvasContext.rotate(rotationAngle);
             this.canvasContext.arc(circleOffset, 0, radius, arc.startAngle, arc.endAngle, arc.counterClockwise);
-        }, this);
+        });
     }
 
     _centerTransform() {

@@ -4,6 +4,7 @@ import VennContent from "./VennContent";
 import VennHeader from "./VennHeader";
 import VennHelper from "./VennHelper";
 import App from 'grommet/components/App';
+import './DynamicVenn.css';
 
 class DynamicVenn extends Component {
     constructor(props) {
@@ -21,9 +22,35 @@ class DynamicVenn extends Component {
     }
 
     handleResize(width) {
-        const expectedWidth = VennHelper.expectedWidth(width);
+        let element = document.getElementById("vennDiagramCanvas");
+        let availableWidth = width;
+        while (element.id !== "dynamicVennAppContainer") {
+            availableWidth -= this.getPaddingInPixels(element);
+            element = element.parentElement;
+        }
+
+        const expectedWidth = VennHelper.expectedWidth(availableWidth);
         if (expectedWidth !== this.state.width)
             this.setState({width: expectedWidth});
+    }
+
+    getPaddingInPixels(element) {
+        const elementStyle = window.getComputedStyle(element);
+        let paddingPixels = 0;
+
+        if (elementStyle.hasOwnProperty("padding-left")) {
+            const pixelCount = parseInt(elementStyle["padding-left"].match("\\d+")[0], 10);
+            if (typeof(pixelCount) === "number")
+                paddingPixels += pixelCount;
+        }
+
+        if (elementStyle.hasOwnProperty("padding-right")) {
+            const pixelCount = parseInt(elementStyle["padding-right"].match("\\d+")[0], 10);
+            if (typeof(pixelCount) === "number")
+                paddingPixels += pixelCount;
+        }
+
+        return paddingPixels;
     }
 
     render() {
@@ -31,7 +58,7 @@ class DynamicVenn extends Component {
         const width = this.state.width;
 
         return (
-            <App>
+            <App id="dynamicVennAppContainer">
                 <ReactResizeDetector handleWidth={true} onResize={this.handleResize}/>
                 <VennHeader setCount={setCount} onChange={this.handleSetCountChange}/>
                 <VennContent setCount={setCount} width={width}/>
