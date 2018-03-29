@@ -14,8 +14,8 @@ class App extends Component {
             <Router>
                 <div>
                     <Switch>
-                        <Route exact path="/" render={() => (<Redirect to="/venn/3"/>)}/>
-                        <Route exact path="/venn/:setCount([23])" component={DynamicVenn}/>
+                        <Route exact path="/" render={() => (<Redirect to="/3"/>)}/>
+                        <Route exact path="/:setCount([23])" component={DynamicVenn}/>
                         <Route component={RouteNotFound}/>
                     </Switch>
                 </div>
