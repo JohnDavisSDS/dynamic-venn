@@ -3,7 +3,7 @@
     {
       "name": "dynamic-venn-production",
       "script": "serve",
-      "args" : "-s build"
+      "args" : "--single --port 3000 build"
     }
   ]
 }
