@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "dynamic-venn-production",
+      "script": "serve",
+      "args" : "-s build"
+    }
+  ]
+}
