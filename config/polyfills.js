@@ -25,11 +25,11 @@ if (process.env.NODE_ENV === 'test') {
 if (!Set.prototype.isSuperset) {
     Object.defineProperty(Set.prototype, 'isSuperset', {
         value: function(subset) {
-            for (var elem of subset) {
+            subset.forEach(function(elem) {
                 if (!this.has(elem)) {
                     return false;
                 }
-            }
+            }, this);
             return true;
         }
     });
@@ -39,9 +39,9 @@ if (!Set.prototype.union) {
     Object.defineProperty(Set.prototype, 'union', {
         value: function(setB) {
             var union = new Set(this);
-            for (var elem of setB) {
+            setB.forEach(function(elem) {
                 union.add(elem);
-            }
+            }, this);
             return union;
         }
     });
@@ -51,11 +51,11 @@ if (!Set.prototype.intersection) {
     Object.defineProperty(Set.prototype, 'intersection', {
         value: function(setB) {
             var intersection = new Set();
-            for (var elem of setB) {
+            setB.forEach(function(elem) {
                 if (this.has(elem)) {
                     intersection.add(elem);
                 }
-            }
+            }, this);
             return intersection;
         }
     });
@@ -65,9 +65,9 @@ if (!Set.prototype.difference) {
     Object.defineProperty(Set.prototype, 'difference', {
         value: function(setB) {
             var difference = new Set(this);
-            for (var elem of setB) {
+            setB.forEach(function(elem) {
                 difference.delete(elem);
-            }
+            }, this);
             return difference;
         }
     });
