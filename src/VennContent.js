@@ -13,7 +13,7 @@ class VennContent extends Component {
         const width = this.props.width;
 
         this.state = {
-            vennIllustrationData: new VennIllustrationData(setCount, width, [])
+            vennIllustrationData: new VennIllustrationData(setCount, width, [], "")
         };
     }
 
@@ -22,11 +22,12 @@ class VennContent extends Component {
         const width = nextProps.width;
 
         if (setCount !== this.props.setCount) {
-            this.setState({vennIllustrationData: new VennIllustrationData(setCount, width, [])});
+            this.setState({vennIllustrationData: new VennIllustrationData(setCount, width, [], "")});
         }
         else if (width !== this.props.width) {
             const vennSections = this.state.vennIllustrationData.vennSections;
-            this.setState({vennIllustrationData: new VennIllustrationData(setCount, width, vennSections)});
+            const setFormulaTest = this.state.vennIllustrationData.setFormulaTest;
+            this.setState({vennIllustrationData: new VennIllustrationData(setCount, width, vennSections, setFormulaTest)});
         }
     }
 

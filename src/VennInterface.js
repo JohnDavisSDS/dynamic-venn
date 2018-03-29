@@ -152,7 +152,7 @@ class VennInterface extends Component {
             }
             return;
         }
-        const newVenn = new VennIllustrationData(currentVenn.setCount, currentVenn.width, newVennSets);
+        const newVenn = new VennIllustrationData(currentVenn.setCount, currentVenn.width, newVennSets, setFormula);
 
         this.setState({errorIndex: 0, errorMessage: ""});
         this.props.onDiagramRender(newVenn);

@@ -1,9 +1,10 @@
 class VennIllustrationData {
-    constructor(setCount, width, vennSections) {
+    constructor(setCount, width, vennSections, setFormulaText) {
         this.setCount = setCount;
         this.width = width;
         this.vennSections = vennSections;
         this.firstCircleRotationAngle = 3 * Math.PI / 2 - Math.PI / setCount;
+        this.setFormulaTest = setFormulaText;
     }
 
     circleRotationAngle(setIndex) {
