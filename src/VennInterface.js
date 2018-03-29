@@ -55,20 +55,21 @@ class VennInterface extends Component {
 
         let selectionStart = e.target.selectionStart;
         let setFormulaText = e.target.value;
-        if (setFormulaText.length > 0) {
-            const newChar = setFormulaText.substr(selectionStart - 1, 1);
-            let replacementChar = "";
-            if (this.charMap.hasOwnProperty(newChar)) {
-                replacementChar = this.charMap[newChar];
+
+        const textArray = setFormulaText.split("");
+        const charValues = Object.values(this.charMap);
+        setFormulaText = "";
+        textArray.forEach((char, index) => {
+            if (this.charMap.hasOwnProperty(char)) {
+                setFormulaText += this.charMap[char];
             }
-
-            setFormulaText = setFormulaText.slice(0, selectionStart - 1) +
-                replacementChar +
-                setFormulaText.slice(selectionStart);
-
-            if (replacementChar === "")
+            else if (charValues.includes(char)) {
+                setFormulaText += char;
+            }
+            else if (index < selectionStart) {
                 selectionStart -= 1;
-        }
+            }
+        });
 
         this.setState({setFormulaText, selectionStart, selectionEnd: selectionStart});
     }
@@ -80,10 +81,14 @@ class VennInterface extends Component {
         const selectionEnd = e.target.selectionEnd;
 
         const clipboardArray = clipboardText.split("");
+        const charValues = Object.values(this.charMap);
         let pasteText = "";
         clipboardArray.forEach((char) => {
             if (this.charMap.hasOwnProperty(char)) {
                 pasteText += this.charMap[char];
+            }
+            else if (charValues.includes(char)) {
+                pasteText += char;
             }
         });
 
